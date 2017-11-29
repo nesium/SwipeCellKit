@@ -579,6 +579,14 @@ extension SwipeTableViewCell: SwipeActionsViewDelegate {
 extension SwipeTableViewCell {
     /// :nodoc:
     override open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        // If we're not already active and we have no delegate set, just ignore our GestureRecognizers,
+        // so that they don't swallow any touches which could be used otherwise, eg. horizontally
+        // scrolling a CollectionView.
+        if (gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) &&
+          (!self.state.isActive && self.delegate == nil) {
+          return false
+        }
+
         if gestureRecognizer == tapGestureRecognizer {
             if UIAccessibilityIsVoiceOverRunning() {
                 collectionView?.hideSwipeCell()
