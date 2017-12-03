@@ -16,6 +16,10 @@ import UIKit
 open class SwipeTableViewCell: UICollectionViewCell, UIGestureRecognizerDelegate {
     /// The object that acts as the delegate of the `SwipeTableViewCell`.
     public weak var delegate: SwipeTableViewCellDelegate?
+
+    public var actionsViewFrame: CGRect {
+      return self.actionsView?.frame ?? .zero
+    }
     
     var animator: SwipeAnimator?
 
