@@ -334,6 +334,11 @@ open class SwipeTableViewCell: UICollectionViewCell, UIGestureRecognizerDelegate
     // `SwipeTableCell`.
     /// :nodoc:
     override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        // If we have no delegate there is no point in modifying the touch area…
+        if self.delegate == nil {
+          return super.point(inside: point, with: event)
+        }
+
         let point = convert(point, to: superview!)
 
         if !UIAccessibilityIsVoiceOverRunning() {
