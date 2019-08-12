@@ -23,13 +23,15 @@ struct ActionsViewLayoutContext {
     let contentSize: CGSize
     let visibleWidth: CGFloat
     let minimumButtonWidth: CGFloat
+    let contentPadding: UIEdgeInsets
     
-    init(numberOfActions: Int, orientation: SwipeActionsOrientation, contentSize: CGSize = .zero, visibleWidth: CGFloat = 0, minimumButtonWidth: CGFloat = 0) {
+    init(numberOfActions: Int, orientation: SwipeActionsOrientation, contentSize: CGSize = .zero, visibleWidth: CGFloat = 0, minimumButtonWidth: CGFloat = 0, contentPadding: UIEdgeInsets) {
         self.numberOfActions = numberOfActions
         self.orientation = orientation
         self.contentSize = contentSize
         self.visibleWidth = visibleWidth
         self.minimumButtonWidth = minimumButtonWidth
+        self.contentPadding = contentPadding
     }
     
     static func newContext(for actionsView: SwipeActionsView) -> ActionsViewLayoutContext {
@@ -37,7 +39,8 @@ struct ActionsViewLayoutContext {
                                         orientation: actionsView.orientation,
                                         contentSize: actionsView.contentSize,
                                         visibleWidth: actionsView.visibleWidth,
-                                        minimumButtonWidth: actionsView.minimumButtonWidth)
+                                        minimumButtonWidth: actionsView.minimumButtonWidth,
+                                        contentPadding: actionsView.options.contentPadding)
     }
 }
 
@@ -79,7 +82,7 @@ class DragTransitionLayout: SwipeTransitionLayout {
 class RevealTransitionLayout: DragTransitionLayout {
     override func container(view: UIView, didChangeVisibleWidthWithContext context: ActionsViewLayoutContext) {
         let width = context.minimumButtonWidth * CGFloat(context.numberOfActions)
-        view.bounds.origin.x = (width - context.visibleWidth) * context.orientation.scale
+        view.bounds.origin.x = context.contentPadding.right + (width - context.visibleWidth) * context.orientation.scale
     }
     
     override func visibleWidthsForViews(with context: ActionsViewLayoutContext) -> [CGFloat] {

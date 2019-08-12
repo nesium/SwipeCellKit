@@ -53,7 +53,7 @@ class SwipeActionsView: UIView {
     }
  
     var preferredWidth: CGFloat {
-        return minimumButtonWidth * CGFloat(actions.count)
+        return minimumButtonWidth * CGFloat(actions.count) + options.contentPadding.left + options.contentPadding.right
     }
 
     var contentSize: CGSize {
@@ -85,7 +85,7 @@ class SwipeActionsView: UIView {
             transitionLayout = DragTransitionLayout()
         }
         
-        self.layoutContext = ActionsViewLayoutContext(numberOfActions: actions.count, orientation: orientation)
+        self.layoutContext = ActionsViewLayoutContext(numberOfActions: actions.count, orientation: orientation, contentPadding: options.contentPadding)
         
         feedbackGenerator = SwipeFeedback(style: .light)
         feedbackGenerator.prepare()
@@ -115,12 +115,20 @@ class SwipeActionsView: UIView {
         
         let maximum = options.maximumButtonWidth ?? (size.width - 30) / CGFloat(actions.count)
         minimumButtonWidth = buttons.reduce(options.minimumButtonWidth ?? 74, { initial, next in max(initial, next.preferredWidth(maximum: maximum)) })
+
+        var frame = CGRect(origin: .zero, size: CGSize(width: bounds.width, height: bounds.height))
+        var autoresizingMask: UIView.AutoresizingMask = [.flexibleHeight, .flexibleWidth]
+
+        if options.style == .circle {
+          frame.size = CGSize(width: maximum, height: maximum)
+          autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin]
+        }
         
         buttons.enumerated().forEach { (index, button) in
             let action = actions[index]
-            let frame = CGRect(origin: .zero, size: CGSize(width: bounds.width, height: bounds.height))
             let wrapperView = SwipeActionButtonWrapperView(frame: frame, action: action, orientation: orientation, contentWidth: minimumButtonWidth)
-            wrapperView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+            wrapperView.style = options.style
+            wrapperView.autoresizingMask = autoresizingMask
             wrapperView.addSubview(button)
             
             if let effect = action.backgroundEffect {
@@ -137,6 +145,13 @@ class SwipeActionsView: UIView {
             button.maximumImageHeight = maximumImageHeight
             button.verticalAlignment = options.buttonVerticalAlignment
             button.shouldHighlight = action.hasBackgroundColor
+
+            if options.style == .circle {
+              button.layer.cornerRadius = min(
+                wrapperView.contentRect.width,
+                wrapperView.contentRect.height
+              ) / 2
+            }
         }
         
         return buttons
@@ -232,6 +247,7 @@ class SwipeActionsView: UIView {
 
 class SwipeActionButtonWrapperView: UIView {
     let contentRect: CGRect
+    var style: SwipeTableOptions.ButtonStyle = .regular
     
     init(frame: CGRect, action: SwipeAction, orientation: SwipeActionsOrientation, contentWidth: CGFloat) {
         switch orientation {
@@ -263,5 +279,16 @@ class SwipeActionButtonWrapperView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+      super.layoutSubviews()
+
+      switch self.style {
+        case .regular:
+          self.layer.cornerRadius = 0
+        case .circle:
+          self.layer.cornerRadius = min(self.bounds.width, self.bounds.height) / 2
+      }
     }
 }

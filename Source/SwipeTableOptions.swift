@@ -9,6 +9,11 @@ import UIKit
 
 /// The `SwipeTableOptions` class provides options for transistion and expansion behavior for swiped cell.
 public struct SwipeTableOptions {
+    public enum ButtonStyle {
+      case regular
+      case circle
+    }
+
     /// The transition style. Transition is the style of how the action buttons are exposed during the swipe.
     public var transitionStyle: SwipeTransitionStyle = .border
     
@@ -41,6 +46,10 @@ public struct SwipeTableOptions {
     
     /// The amount of space, in points, between the button image and the button title.
     public var buttonSpacing: CGFloat?
+
+    public var style: ButtonStyle = .regular
+
+    public var contentPadding: UIEdgeInsets = .zero
     
     /// Constructs a new `SwipeTableOptions` instance with default options.
     public init() {}
