@@ -1,10 +1,13 @@
-//
-//  Created by Jeremy Koch.
-//  Copyright © 2017 Jeremy Koch. All rights reserved.
-//
-
+// swift-tools-version:5.1
 import PackageDescription
 
 let package = Package(
-    name: "SwipeCellKit"
+  name: "SwipeCellKit",
+  platforms: [
+    .iOS(.v10)
+  ],
+  products: [
+    .library(name: "SwipeCellKit", targets: ["SwipeCellKit"])
+  ],
+  targets: [.target(name: "SwipeCellKit", dependencies: [])]
 )
