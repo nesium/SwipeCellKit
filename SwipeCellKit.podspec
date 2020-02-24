@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
    s.author = 'Jeremy Koch'
 
    s.source = { :git => 'https://github.com/jerkoch/SwipeCellKit.git', :tag => s.version }
-   s.source_files = 'Sources/*.swift'
+   s.source_files = 'Sources/SwipeCellKit/*.swift'
 
    s.ios.deployment_target = '9.0'
 end
